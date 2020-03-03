@@ -1,0 +1,56 @@
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<div id="data-container" style="text-align:center;">
+   <input id="year" type="number" name="year" placeholder="Select Year">
+<button onclick="search()">Search</button>
+</div>
+<div id="error" style="text-align: center; margin: 20px;"></div>
+<div id="response" style="margin-top: 20px;"></div>
+
+<script>
+function search(){
+   $.ajax({
+  url: "http://testingforwordpress.epizy.com/get_mylaw.php",
+  method:"GET",
+  data: { "username": getCookie("usernameCookie"), "year": $("#year").val() }
+}).done(function(response) {
+  console.log(response);
+  $('#error').empty();
+  $('#response').empty();
+  if( response == "Year not found" ) {
+    $('#error').append('<h4 style="color: red;">Year not found.</h4>');
+  }
+  else if( response == "User not found" ) {
+    $('#error').append('<h4 style="color: red;">Username not found, you must <a style="text-decoration: underline; text-decoration-color: #a83252;" href="http://testingforwordpress.epizy.com/user-laws/">log in.</a></h4>');
+  }
+  else {
+    var data = JSON.parse(response);
+    var div2 = `<p><b>Laws related to user: ${data[0].user_login}</b></p>`;
+    $('#response').append(div2);
+    for(var i = 0; i < data.length; i++) { 
+      var item = data[i];
+      var div = `<div>
+                  <a style="text-decoration: underline; text-decoration-color: #a83252;" href="http://testingforwordpress.epizy.com/wp-content/uploads/2019/12/pdf${item.pdfId}.pdf"><h5 style="font-family: Arial; color: #a83252; margin-bottom: 0px;">${item.law}</h5></a><span style="font-family: Arial;">${item.description}</span>
+               </div><br>`;
+      $('#response').append(div); 
+    }
+  } 
+     
+}); 
+}
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+</script>

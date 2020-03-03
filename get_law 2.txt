@@ -1,0 +1,47 @@
+<?php
+
+$s=$_COOKIE["usernameCookie"] ;
+if ( username_exists( $s ) ) { 
+	global $wpdb;
+	echo "<b>Laws related to user: ".$s."</b>";
+	echo 
+		'<form method="post" name="myForm">
+			<input type="number" name="year" placeholder="Year"/>
+    	</form>';
+
+	$year = ( isset( $_POST['year'] ) ? $_POST['year'] : '');
+
+	if(  is_numeric($_POST['year']) ) { 
+		
+		
+			$results = $wpdb->get_results($wpdb->prepare("Select law, description, pdfId, year From wpbc_userlaws Where user_login = '%s' and year = '%s'", $s, $year)); 
+			foreach ( $results as $page ) { 
+				$pdf = $page->pdfId;
+				echo 
+					'<div style="text-align: left;"><br>
+					    <a style="text-decoration: underline; text-decoration-color: #a83252;" href="http://testingforwordpress.epizy.com/wp-content/uploads/2019/12/pdf'.$pdf.'.pdf" download="law'.$pdf.'.pdf">
+						<h5 style="font-family: Arial; color: #a83252;">'.$page->law.'</h5></a>
+						<span style="font-family: Arial;">'.$page->description.'</span>
+					</div>'; 
+			}
+		
+		
+	}
+	else {
+		$results = $wpdb->get_results($wpdb->prepare("Select law, description, pdfId From wpbc_userlaws Where user_login = %s", $s)); 
+
+		foreach ( $results as $page ) { 
+			$pdf = $page->pdfId;
+			echo 
+				'<div style="text-align: left;"><br>
+					<a style="text-decoration: underline; text-decoration-color: #a83252;" href="http://testingforwordpress.epizy.com/wp-content/uploads/2019/12/pdf'.$pdf.'.pdf" download="law'.$pdf.'.pdf">
+					<h5 style="font-family: Arial; color: #a83252;">'.$page->law.'</h5></a>
+					<span style="font-family: Arial;">'.$page->description.'</span>
+				</div>'; 
+		} 
+	} 
+}
+else echo '
+<h3 style="text-align: center; color: red;">Username '.$s.' does not exist.</h3>';
+
+?>
