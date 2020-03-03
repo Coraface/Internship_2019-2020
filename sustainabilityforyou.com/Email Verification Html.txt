@@ -1,0 +1,48 @@
+<script>document.addEventListener("DOMContentLoaded", function () {
+  search();
+});
+</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+
+<div id="error" style="text-align: center; margin: 20px;"></div>
+
+<script>
+function search(){
+   event.preventDefault();
+   //var hash = "";
+   var css='style="font-family: Muli; color: red;"';
+   var css2='style="font-family: Muli; color: green;"';
+   var params = location.search.split('id=')[1];
+   var id = params.split('&')[0];
+   var hash = params.split('hash=')[1];
+   console.log(`${id} - ${hash}`);
+   $.ajax({
+  url: "http://sustainability4you.com/mailVerification.php",
+  method:"GET",
+  data: {"id" :  id, "hash" : hash}
+}).done(function(response) {
+  
+  console.log(response);
+  $('#error').empty();
+  if( response == "Password" ) {
+    $('#error').append(`<h4 ${css}>Please choose a password.</h4>`);
+  }
+  else if( response == "Your account has been activated, you can now login." ) {
+    $('#error').append(`<h4 ${css2}>Your account has been activated, you can now login..</h4>`);
+  }
+  else if( response == "The url is either invalid or you already have activated your account." ) {
+    $('#error').append(`<h4 ${css}>The url is either invalid or you already have activated your account.</h4>`);
+  }
+  else if( response == "Invalid approach, please use the link that has been send to your email." ) {
+    $('#error').append(`<h4 ${css}>Invalid approach, please use the link that has been send to your email.</h4>`);
+  }
+  else {
+      $('#error').append(`<h4 ${css}>Failed.</h4>`);
+  }
+
+    
+}); 
+}
+
+</script>

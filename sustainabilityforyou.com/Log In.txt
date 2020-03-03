@@ -1,0 +1,40 @@
+<?php
+
+add_action('init', function () {
+	//require_once($_SERVER['DOCUMENT_ROOT'].'/wp-load.php');    
+	global $wpdb;
+	
+	$username = ( isset($_POST['luname']) ? ($_POST['luname']) : '' );
+	$pass = ( isset($_POST['lupass']) ? ($_POST['lupass']) : '' );
+	
+	//$hashed_p = password_hash($pass, PASSWORD_DEFAULT);
+	$hashed_p = $wpdb->get_var($wpdb->prepare("SELECT user_pass FROM wp_users WHERE user_login = '%s'", $username));
+	$bool = password_verify($pass, $hashed_p);
+	$active = $wpdb->get_var($wpdb->prepare("SELECT active FROM wp_users WHERE user_login = '%s'", $username));
+	if($active > 0 && $bool == true){
+    	//$msg = 'Login Complete! Thanks';
+		//echo $msg;
+    	// Set cookie / Start Session / Start Download etc...
+		//if(!is_wp_error(wp_authenticate($username, $pass))) {
+			if($username) setcookie("usernameCookie", $username, time()+3600, COOKIEPATH, COOKIE_DOMAIN);
+		//}
+	}
+	
+	/*if(!is_wp_error(wp_authenticate($username, $pass))) {
+		if($username) setcookie("usernameCookie", $username, time()+3600, COOKIEPATH, COOKIE_DOMAIN);
+	}*/
+	
+	if( isset( $_POST['logoutbtn'] ) ) {
+		if ( isset($_COOKIE['usernameCookie']) ) {
+			unset($_COOKIE['usernameCookie']); 
+			setcookie('usernameCookie', null, time()-1,"/");
+		}
+	}
+	
+	if( isset( $_POST['mysubmitbtn'] ) ) {
+		wp_redirect('http://sustainability4you.com/laws/');
+		exit;
+	}
+});
+
+?>

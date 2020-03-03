@@ -1,0 +1,67 @@
+<script>document.addEventListener("DOMContentLoaded", function () {
+  search();
+});</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<div id="data-container" style="margin-bottom: 20px;">
+   <form onsubmit="search()"><p style="display:flex; justify-content:space-around; align-content: center;">
+       <input id="year" type="number" name="year" placeholder="Select Year" style="text-align:center; border: 0.5px solid blue; width: 30%">
+        <input id="keyword" type="text" name="keyword" placeholder="Select Keyword" style="text-align:center; border: 0.5px solid blue; width: 30%">
+        <input id="fek" type="text" name="fek" placeholder="Select F??" style="text-align:center; border: 0.5px solid blue; width: 30%">
+   </p><br>
+   <input type="submit" value="Submit" name="submitbtn" style="background-color:#335ede; color:white; margin: auto; cursor: pointer;"/>
+      
+</form>
+
+</div>
+<div id="error" style="text-align: center; margin: 20px;"></div>
+<div id="response" style="margin-top: 20px;"></div>
+
+<script>
+function search(){
+   event.preventDefault();
+   $.ajax({
+  url: "http://sustainability4you.com/get_mylaw.php",
+  method:"GET",
+  data: { "username": getCookie("usernameCookie"), "year": $("#year").val(), "keyword": $("#keyword").val(), "fek" : $("#fek").val() }
+}).done(function(response) {
+  console.log(response);
+  $('#error').empty();
+  $('#response').empty();
+  if( response == "Year not found" ) {
+    $('#error').append('<h5 style="font-family: Muli; color: red;">Year not found.</h5>');
+  }
+  else if( response == "User not found" ) {
+    $('#error').append('<h5 style="font-family: Muli; color: red;">User not found, maybe try to <a style="text-decoration: underline; text-decoration-color: #a83252;" href="http://sustainability4you.com/#regist&log">log in.</a></h5>');
+  }
+  else {
+    var data = JSON.parse(response);
+    var div2 = `<p><b>Laws related to user: ${getCookie("usernameCookie")}</b></p>`;
+    $('#response').append(div2);
+    for(var i = 0; i < data.length; i++) { 
+      var item = data[i];
+      var div = `<div>
+                  <a style="text-decoration: underline; text-decoration-color: #a83252;" href="http://sustainability4you.com/wp-content/uploads/2020/pdfs/pdf${item.pdfId}.pdf"><h5 style="font-family: Arial; color: #a83252; margin-bottom: 0px;">${item.law}</h5></a><span style="font-family: Arial;">${item.description}</span>
+               </div><br>`;
+      $('#response').append(div); 
+    }
+  } 
+     
+}); 
+}
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+</script>

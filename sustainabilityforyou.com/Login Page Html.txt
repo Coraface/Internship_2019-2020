@@ -1,0 +1,10 @@
+<div id="container" style="text-align:center; margin:auto;width: 80%;">
+    <form method="post" name="myForm">
+         <input type="text"  name="luname" placeholder="Username" style="text-align:center; border: 0.5px solid blue;"/><br>
+          <input type="password" name="lupass" placeholder="Password" style="text-align:center; border: 0.5px solid blue;"/><br><br>
+        <div class="flex-container" style="display:flex; justify-content: center;
+  align-items: center; "><input type="submit" value="Log In" name="mysubmitbtn" style="background-color:#335ede; color:white; cursor: pointer;"/>
+        <input type="submit" value="Log Out" name="logoutbtn" style="background-color:#335ede; color:white; cursor: pointer;"/></div>
+        
+    </form>
+</div>

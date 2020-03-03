@@ -1,0 +1,52 @@
+<script>document.addEventListener("DOMContentLoaded", function () {
+  search();
+});</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<div id="data-container" style="text-align:center;margin-bottom: 20px; margin:auto;width: 80%;">
+   <form onsubmit="search()" method="post" name="myForm">
+         <input id="uname" type="text" name="uname" placeholder="Username" style="text-align:center; border: 0.5px solid blue;"/><br>
+          <input id="uemail" type="text" name="uemail" placeholder="Email" style="text-align:center; border: 0.5px solid blue;"/><br>
+          <input id="upass" type="password"  name="upass" placeholder="Password" style="text-align:center; border: 0.5px solid blue;"/><br>
+          <input type="submit" value="Submit" name="registbtn" style="background-color:#335ede; color:white; margin: auto; cursor: pointer;"/><br>
+    </form>
+
+</div>
+<div id="error" style="text-align: center; margin: 20px;"></div>
+
+<script>
+function search(){
+   event.preventDefault();
+   var css='style="font-family: Muli; color: red;"';
+   var css2='style="font-family: Muli; color: green;"';
+   $.ajax({
+  url: "http://sustainability4you.com/registration.php",
+  method:"GET",
+  data: { "uname" : $("#uname").val(),
+  "upass" : $("#upass").val(), "uemail" : $("#uemail").val()}
+}).done(function(response) {
+    if($("#uname").val()!=''){
+  console.log(response);
+  $('#error').empty();
+  if( response == "Password" ) {
+    $('#error').append(`<h4 ${css}>Please choose a password.</h4>`);
+  }
+  else if( response == "Email exists" ) {
+    $('#error').append(`<h4 ${css}>A user with that email already exists.</h4>`);
+  }
+  else if( response == "Username exists" ) {
+    $('#error').append(`<h4 ${css}>A user with that name already exists.</h4>`);
+  }
+  else if( response == "Not Valid email" ) {
+    $('#error').append(`<h4 ${css}>Please, choose a valid email.</h4>`);
+  }
+  else if( response == "Username" ) {
+    $('#error').append(`<h4 ${css}>Please, choose a username.</h4>`);
+  }
+  else if( response == "Success") {
+      $('#error').append(`<h4 ${css2}">Thank you! Please, check your email for verification.</h4>`);
+  }
+    }
+}); 
+}
+
+</script>
